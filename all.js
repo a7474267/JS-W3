@@ -62,35 +62,37 @@ var app = new Vue({
             }
         },
         deleteProduct() {
+            const vm = this;
             if (this.tempProduct.id) {
                 const id = this.tempProduct.id;
                 this.product.forEach(function(item, index) {
                     if (item.id === id) {
-                        this.product.splice(index, 1);
-                        this.tempProduct = {};
+                        vm.product.splice(index, 1);
+                        vm.tempProduct = {};
                     }
                 })
             }
             $('#deleteModal').modal('hide');
         },
         editOrUpdate() {
+            const vm = this;
             //如果id為真值，代表是編輯產品
             if (this.tempProduct.id) {
                 const id = this.tempProduct.id;
                 this.product.forEach(function(item, index) {
                     //使用id當做比對的標的物，對id相符的才做更新
                     if (item.id === id) {
-                        this.product[index] = this.tempProduct;
+                        vm.product[index] = vm.tempProduct;
                     }
                 });
             } //else代表新增產品 
             else {
                 const id = new Date().getTime();
                 //因為表單內沒有新增id的地方，這裡可以先把id push進去array
-                this.tempProduct.id = id;
-                this.product.push(this.tempProduct)
+                vm.tempProduct.id = id;
+                vm.product.push(vm.tempProduct)
             }
-            this.tempProduct = {};
+            vm.tempProduct = {};
             //清空暫時資料，然後關閉modal
             $('#productModal').modal('hide');
         },
