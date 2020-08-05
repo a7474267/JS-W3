@@ -2,163 +2,152 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <!-- bs4 CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <link rel="stylesheet" href="all.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- bs4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="all.css">
 </head>
 
 <body>
-  <div id="app" class="container">
-    <button class="btn btn-warning font-weight-bolder my-4" v-on:click="activateModal('add')">
+    <div id="app" class="container">
+        <button class="btn btn-warning font-weight-bolder my-4" v-on:click="activateModal('add')">
       建立新的產品
     </button>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">分類</th>
-          <th scope="col">產品名稱</th>
-          <th scope="col">原價</th>
-          <th scope="col">售價</th>
-          <th scope="col">是否啟用</th>
-          <th scope="col">編輯</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in product" v-bind:key="item.id">
-          <th scope="row">{{item.category}}</th>
-          <td>{{ item.title }}</td>
-          <td>{{ item.origin_price }}</td>
-          <td>{{ item.price }}</td>
-          <td>
-            <p v-if="item.is_enabled" class="text-success">有庫存</p>
-            <p v-else>已賣完</p>
-          </td>
-          <td>
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-primary" v-on:click="activateModal('edit',item)">Edit</button>
-              <button type="button" class="btn btn-secondary" v-on:click="activateModal('delete',item)">Delete</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- Modal area -->
-    <!-- add / edit Modal -->
-    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
-      <!-- 使用modal-xl，調整彈出視窗的尺寸 -->
-      <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-          <div class="modal-header bg-dark">
-            <h5 class="modal-title text-white font-weight-bolder" id="exampleModalLabel">新增產品</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <!-- 列表區域 -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">分類</th>
+                    <th scope="col">產品名稱</th>
+                    <th scope="col">原價</th>
+                    <th scope="col">售價</th>
+                    <th scope="col">是否啟用</th>
+                    <th scope="col">編輯</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in product" v-bind:key="item.id">
+                    <th scope="row">{{item.category}}</th>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.origin_price }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>
+                        <p v-if="item.is_enabled" class="text-success">有庫存</p>
+                        <p v-else>已賣完</p>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <!-- 綁定觸發modal事件 -->
+                            <button type="button" class="btn btn-primary" v-on:click="activateModal('edit',item)">Edit</button>
+                            <!-- 綁定觸發modal事件 -->
+                            <button type="button" class="btn btn-secondary" v-on:click="activateModal('delete',item)">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Modal area -->
+        <!-- add / edit Modal -->
+        <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <!-- 使用modal-xl，調整彈出視窗的尺寸 -->
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark">
+                        <h5 class="modal-title text-white font-weight-bolder" id="exampleModalLabel">新增產品</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-4">
-                <!-- 插入表單bs4 -->
-                <form>
-                  <div class="form-group">
-                    <label for="imageUrl">輸入圖片網址</label>
-                    <input type="text" class="form-control" id="imageUrl" aria-describedby="emailHelp"
-                      v-model="tempProduct.imageUrl" placeholder="input photo link">
-                    <img class="img-fluid" v-bind:src="tempProduct.imageUrl" alt="">
-                  </div>
-                </form>
-              </div>
-              <div class="col-8">
-                <!-- 插入表單bs4 -->
-                <form action="">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">標題</label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                      v-model="tempProduct.title" placeholder="輸入產品名稱">
-                  </div>
-                  <div class="form-row form-group">
-                    <div class="col">
-                      <label for="category">分類</label>
-                      <input type="text" id="category" class="form-control" placeholder="input category"
-                        v-model="tempProduct.category">
                     </div>
-                    <div class="col">
-                      <label for="unit">單位</label>
-                      <input type="text" id="unit" class="form-control" placeholder="input unit"
-                        v-model="tempProduct.unit">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <!-- 插入表單bs4 -->
+                                <form>
+                                    <div class="form-group">
+                                        <label for="imageUrl">輸入圖片網址</label>
+                                        <input type="text" class="form-control" id="imageUrl" aria-describedby="emailHelp" v-model="tempProduct.imageUrl" placeholder="input photo link">
+                                        <img class="img-fluid" v-bind:src="tempProduct.imageUrl" alt="">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-8">
+                                <!-- 插入表單bs4 -->
+                                <form action="">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">標題</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" v-model="tempProduct.title" placeholder="輸入產品名稱">
+                                    </div>
+                                    <div class="form-row form-group">
+                                        <div class="col">
+                                            <label for="category">分類</label>
+                                            <input type="text" id="category" class="form-control" placeholder="input category" v-model="tempProduct.category">
+                                        </div>
+                                        <div class="col">
+                                            <label for="unit">單位</label>
+                                            <input type="text" id="unit" class="form-control" placeholder="input unit" v-model="tempProduct.unit">
+                                        </div>
+                                    </div>
+                                    <div class="form-row form-group">
+                                        <div class="col">
+                                            <label for="originPrice">原價</label>
+                                            <input type="number" id="originPrice" class="form-control" placeholder="輸入原價" v-model="tempProduct.origin_price">
+                                        </div>
+                                        <div class="col">
+                                            <label for="price">售價</label>
+                                            <input type="number" id="price" class="form-control" placeholder="輸入售價" v-model="tempProduct.price">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">產品描述</label>
+                                        <textarea class="form-control" id="description" rows="3" v-model="tempProduct.description"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="content">說明內容</label>
+                                        <textarea class="form-control" id="content" rows="3" v-model="tempProduct.content"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="form-row form-group">
-                    <div class="col">
-                      <label for="originPrice">原價</label>
-                      <input type="number" id="originPrice" class="form-control" placeholder="輸入原價"
-                        v-model="tempProduct.origin_price">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light border-secondary" data-dismiss="modal">Cancel</button>
+                        <!-- 綁定確認新增事件 -->
+                        <button type="button" class="btn btn-primary" v-on:click="editOrUpdate">Confirm</button>
                     </div>
-                    <div class="col">
-                      <label for="price">售價</label>
-                      <input type="number" id="price" class="form-control" placeholder="輸入售價"
-                        v-model="tempProduct.price">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="description">產品描述</label>
-                    <textarea class="form-control" id="description" rows="3"
-                      v-model="tempProduct.description"></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="content">說明內容</label>
-                    <textarea class="form-control" id="content" rows="3" v-model="tempProduct.content"></textarea>
-                  </div>
-                </form>
-              </div>
+                </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-light border-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary">Confirm</button>
-          </div>
         </div>
-      </div>
-    </div>
-    <!-- delete modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header bg-warning text-black">
-            <h5 class="modal-title font-weight-bolder" id="exampleModalLabel">刪除產品</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <!-- delete modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-black">
+                        <h5 class="modal-title font-weight-bolder" id="exampleModalLabel">刪除產品</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div>
-          <div class="modal-body">
-            是否刪除<span class="text-danger font-weight-bolder">{{ tempProduct.title }}</span>? (刪除後將無法挽回)
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-light border-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger">Confirm</button>
-          </div>
+                    </div>
+                    <div class="modal-body">
+                        是否刪除<span class="text-danger font-weight-bolder">{{ tempProduct.title }}</span>? (刪除後將無法挽回)
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light border-secondary" data-dismiss="modal">Cancel</button>
+                        <!-- 綁定確認刪除事件 -->
+                        <button type="button" class="btn btn-danger" v-on:click="deleteProduct">Confirm</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <!-- bs4 js -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-    crossorigin="anonymous"></script>
-  <!-- Vue.js -->
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="all.js"></script>
+    <!-- bs4 js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="all.js"></script>
 </body>
 
 </html>

@@ -1,8 +1,7 @@
 var app = new Vue({
     el: '#app',
     data: {
-        product: [
-            {
+        product: [{
                 id: 1586934917210,
                 unit: '台',
                 category: '撒卡蘭姆盾牌',
@@ -39,11 +38,11 @@ var app = new Vue({
                 imageUrl: 'https://www.google.com.tw/url?sa=i&url=https%3A%2F%2Fforum.gamer.com.tw%2FCo.php%3Fbsn%3D21400%26sn%3D1034934&psig=AOvVaw3s1B2kkcUt55_NpXD05vg-&ust=1596296117016000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKiY8sro9-oCFQAAAAAdAAAAABAD',
             }
         ],
-        tempProduct: {}
+        tempProduct: {},
     },
     methods: {
         //把每個按鈕都綁定開啟modal事件，然後用switch做功能上的分流
-        activateModal(action,item) {
+        activateModal(action, item) {
             switch (action) {
                 case 'add':
                     this.tempProduct = {};
@@ -51,7 +50,7 @@ var app = new Vue({
                     $('#productModal').modal('show', item);
                     break;
                 case 'edit':
-                    this.tempProduct = Object.assign({}, item);//淺層複製
+                    this.tempProduct = Object.assign({}, item); //淺層複製
                     $('#productModal').modal('show');
                     break;
                 case 'delete':
@@ -61,6 +60,39 @@ var app = new Vue({
                 default:
                     break;
             }
+        },
+        deleteProduct() {
+            if (this.tempProduct.id) {
+                const id = this.tempProduct.id;
+                this.product.forEach(function(item, index) {
+                    if (item.id === id) {
+                        this.product.splice(index, 1);
+                        this.tempProduct = {};
+                    }
+                })
+            }
+            $('#deleteModal').modal('hide');
+        },
+        editOrUpdate() {
+            //如果id為真值，代表是編輯產品
+            if (this.tempProduct.id) {
+                const id = this.tempProduct.id;
+                this.product.forEach(function(item, index) {
+                    //使用id當做比對的標的物，對id相符的才做更新
+                    if (item.id === id) {
+                        this.product[index] = this.tempProduct;
+                    }
+                });
+            } //else代表新增產品 
+            else {
+                const id = new Date().getTime();
+                //因為表單內沒有新增id的地方，這裡可以先把id push進去array
+                this.tempProduct.id = id;
+                this.product.push(this.tempProduct)
+            }
+            this.tempProduct = {};
+            //清空暫時資料，然後關閉modal
+            $('#productModal').modal('hide');
         },
     }
 })
