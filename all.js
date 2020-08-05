@@ -61,11 +61,12 @@ var app = new Vue({
                     break;
             }
         },
+        //刪除確認事件
         deleteProduct() {
             const vm = this;
-            if (this.tempProduct.id) {
-                const id = this.tempProduct.id;
-                this.product.forEach(function(item, index) {
+            if (vm.tempProduct.id) {
+                const id = vm.tempProduct.id;
+                vm.product.forEach(function(item, index) {
                     if (item.id === id) {
                         vm.product.splice(index, 1);
                         vm.tempProduct = {};
@@ -74,12 +75,13 @@ var app = new Vue({
             }
             $('#deleteModal').modal('hide');
         },
+        //新增or編輯確認事件
         editOrUpdate() {
             const vm = this;
             //如果id為真值，代表是編輯產品
-            if (this.tempProduct.id) {
-                const id = this.tempProduct.id;
-                this.product.forEach(function(item, index) {
+            if (vm.tempProduct.id) {
+                const id = vm.tempProduct.id;
+                vm.product.forEach(function(item, index) {
                     //使用id當做比對的標的物，對id相符的才做更新
                     if (item.id === id) {
                         vm.product[index] = vm.tempProduct;
